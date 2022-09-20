@@ -12,16 +12,12 @@ try {
     console.log(e);
 }
 
-console.log('TEST_ENV', process.env.TEST_ENV);
-
 const CLOUDFLARE_API_KEY = process.env.CLOUDFLARE_API_KEY; 
 const CLOUDFLARE_ZONE_ID = process.env.CLOUDFLARE_ZONE_ID; 
 const CLOUDFLATE_HOSTNAME_ID = process.env.CLOUDFLATE_HOSTNAME_ID; 
 const PINATA_API_KEY = process.env.PINATA_API_KEY; 
 const PINATA_API_SECRET = process.env.PINATA_API_SECRET; 
 
-
- console.log(CLOUDFLARE_ZONE_ID);
 
 const PINATA_API_PINFILETOIPFS = "https://api.pinata.cloud/pinning/pinFileToIPFS";
 const CLOUDFLARE_API_HOST = "https://api.cloudflare.com/client/v4"
@@ -47,8 +43,6 @@ export async function pointToIpfs(cid) {
     const dnslink = `/ipfs/${cid}`;
 
     console.log(`TRYING TO UPDATE DNSLink to ${dnslink}`);
-
-    console.log('AHAHAHA', CLOUDFLARE_API_KEY);
 
     const res = await fetch(`${CLOUDFLARE_API_HOST}/zones/${CLOUDFLARE_ZONE_ID}/web3/hostnames/${CLOUDFLATE_HOSTNAME_ID}`, {
         method: 'PATCH',
