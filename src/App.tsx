@@ -18,7 +18,7 @@ function App() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      Hello from ipfs, it's deployed!!!???!!!! 🤣🥹🥹🙂😃😄😄🥳
+      Hello from ipfs, it's deployed! 🤣🥹🥹🙂😃😄😄🥳
     </div>
   )
 }
