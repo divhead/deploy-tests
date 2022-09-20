@@ -12,6 +12,8 @@ try {
     console.log(e);
 }
 
+console.log('TEST_ENV', process.env.TEST_ENV);
+
 const CLOUDFLARE_API_KEY = process.env.CLOUDFLARE_API_KEY; 
 const CLOUDFLARE_ZONE_ID = process.env.CLOUDFLARE_ZONE_ID; 
 const CLOUDFLATE_HOSTNAME_ID = process.env.CLOUDFLATE_HOSTNAME_ID; 
