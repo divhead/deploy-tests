@@ -16,6 +16,13 @@ jobs:
 
     environment: deploy
 
+    env:
+      PINATA_API_KEY: ${{ secrets.PINATA_API_KEY }}
+      PINATA_API_SECRET: ${{ secrets.PINATA_API_SECRET }}
+      CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_KEY }}
+      CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+      CLOUDFLATE_HOSTNAME_ID: ${{ secrets.CLOUDFLATE_HOSTNAME_ID }} 
+
     strategy:
       matrix:
         node-version: [16.x]
