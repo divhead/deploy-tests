@@ -5,12 +5,12 @@ import FormData from "form-data";
 import basePathConverter from "base-path-converter";
 import fetch from 'node-fetch';
 
-// try {
-//     dotenv.config();
-// } catch(e) {
-//     console.log('DOTENV ERROR');
-//     console.log(e);
-// }
+try {
+    dotenv.config();
+} catch(e) {
+    console.log('DOTENV ERROR');
+    console.log(e);
+}
 
 console.log('TEST_ENV', process.env.TEST_ENV);
 
