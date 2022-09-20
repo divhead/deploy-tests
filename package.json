@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "deploy": "tsx ./scripts/deploy-ipfs.ts"
+    "deploy": "node ./scripts/deploy.js"
   },
   "dependencies": {
     "base-path-converter": "^1.0.2",
