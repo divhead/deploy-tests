@@ -48,6 +48,8 @@ export async function pointToIpfs(cid) {
 
     console.log(`TRYING TO UPDATE DNSLink to ${dnslink}`);
 
+    console.log('AHAHAHA', CLOUDFLARE_API_KEY);
+
     const res = await fetch(`${CLOUDFLARE_API_HOST}/zones/${CLOUDFLARE_ZONE_ID}/web3/hostnames/${CLOUDFLATE_HOSTNAME_ID}`, {
         method: 'PATCH',
         headers: {
