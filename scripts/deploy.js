@@ -5,13 +5,21 @@ import FormData from "form-data";
 import basePathConverter from "base-path-converter";
 import fetch from 'node-fetch';
 
-const { 
-    CLOUDFLARE_API_KEY,
-    CLOUDFLARE_ZONE_ID,
-    CLOUDFLATE_HOSTNAME_ID,
-    PINATA_API_KEY,
-    PINATA_API_SECRET
- } = dotenv.config().parsed
+try {
+    dotenv.config();
+} catch(e) {
+    console.log('DOTENV ERROR');
+    console.log(e);
+}
+
+const CLOUDFLARE_API_KEY = process.env.CLOUDFLARE_API_KEY; 
+const CLOUDFLARE_ZONE_ID = process.env.CLOUDFLARE_ZONE_ID; 
+const CLOUDFLATE_HOSTNAME_ID = process.env.CLOUDFLATE_HOSTNAME_ID; 
+const PINATA_API_KEY = process.env.PINATA_API_KEY; 
+const PINATA_API_SECRET = process.env.PINATA_API_SECRET; 
+
+
+ console.log(CLOUDFLARE_ZONE_ID);
 
 const PINATA_API_PINFILETOIPFS = "https://api.pinata.cloud/pinning/pinFileToIPFS";
 const CLOUDFLARE_API_HOST = "https://api.cloudflare.com/client/v4"
