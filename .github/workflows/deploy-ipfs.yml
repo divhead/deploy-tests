@@ -19,9 +19,8 @@ jobs:
     env:
       PINATA_API_KEY: ${{ secrets.PINATA_API_KEY }}
       PINATA_API_SECRET: ${{ secrets.PINATA_API_SECRET }}
-      CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_KEY }}
-      CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
-      CLOUDFLATE_HOSTNAME_ID: ${{ secrets.CLOUDFLATE_HOSTNAME_ID }} 
+      NETIFLY_API_KEY: ${{ secrets.NETIFLY_API_KEY }}
+      NETIFLY_DNS_ZONE_ID: ${{ secrets.NETIFLY_DNS_ZONE_ID }}
 
     strategy:
       matrix:

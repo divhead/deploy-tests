@@ -12,15 +12,14 @@ try {
     console.log(e);
 }
 
-const CLOUDFLARE_API_KEY = process.env.CLOUDFLARE_API_KEY; 
-const CLOUDFLARE_ZONE_ID = process.env.CLOUDFLARE_ZONE_ID; 
-const CLOUDFLATE_HOSTNAME_ID = process.env.CLOUDFLATE_HOSTNAME_ID; 
 const PINATA_API_KEY = process.env.PINATA_API_KEY; 
-const PINATA_API_SECRET = process.env.PINATA_API_SECRET; 
+const PINATA_API_SECRET = process.env.PINATA_API_SECRET;
 
+const NETIFLY_API_KEY = process.env.NETIFLY_API_KEY;
+const NETIFLY_DNS_ZONE_ID = process.env.NETIFLY_DNS_ZONE_ID;
 
 const PINATA_API_PINFILETOIPFS = "https://api.pinata.cloud/pinning/pinFileToIPFS";
-const CLOUDFLARE_API_HOST = "https://api.cloudflare.com/client/v4"
+const NETIFLY_API_HOST = "https://api.netlify.com/api/v1"
 
 await main();
 
@@ -29,41 +28,102 @@ async function main() {
 
     await waitForCloudflareIpfs(cid);
 
-    await pointToIpfs(cid);
+    await pointToIpfsNetifly(cid);
 }
 
 
 export async function waitForCloudflareIpfs(cid) {
     console.log(`WAITING CID TO BE RESOLVED ON CLOUDFLARE`);
 
-    await fetch(`https://cloudflare-ipfs.com/ipfs/${cid}`);
-}
+    let retries = 5;
+    let resolved = false;
 
-export async function pointToIpfs(cid) {
-    const dnslink = `/ipfs/${cid}`;
+    while (retries > 0) {
+     console.log(`ATTEMPT TO RESOLVE CID, REMAINING RETRIES: ${retries}`);
 
-    console.log(`TRYING TO UPDATE DNSLink to ${dnslink}`);
+     await sleep(5000)
+      
+     const res = await Promise.race([
+        fetch(`https://cloudflare-ipfs.com/ipfs/${cid}`),
+        sleep(5000)
+      ])
 
-    const res = await fetch(`${CLOUDFLARE_API_HOST}/zones/${CLOUDFLARE_ZONE_ID}/web3/hostnames/${CLOUDFLATE_HOSTNAME_ID}`, {
-        method: 'PATCH',
-        headers: {
-            Authorization: `Bearer ${CLOUDFLARE_API_KEY}`,
-            "Content-Type": 'application/json',
-        },
-        body: JSON.stringify({
-            dnslink,
-        })
-    });
+      if (res?.ok) {
+        resolved = true;
+        break;
+      } else {
+        retries--;
+      }
+    }
 
-    const data = await res.json();
-
-    if (data.success) {
-        console.log(`DNSLink SUCCESS UPDATED TO ${dnslink}`)
-    } else {
-        throw new Error(JSON.stringify(data));
+    if (!resolved) {
+      throw new Error('Failed to resolve CID on IPFS gateway')
     }
 }
 
+export async function pointToIpfsNetifly(cid) {
+  const dnslink = `dnslink=/ipfs/${cid}`;
+
+  console.log(`TRYING TO UPDATE DNSLink to ${dnslink}`);
+
+  let oldDnsLinkRecordId;
+
+  {
+   console.log('GET OLD DNS RECORD');
+
+    const res = await fetch(`${NETIFLY_API_HOST}/dns_zones/${NETIFLY_DNS_ZONE_ID}/dns_records`, {
+      headers: {
+        Authorization: `Bearer ${NETIFLY_API_KEY}`,
+        "Content-Type": 'application/json',
+      }
+    })
+  
+    const data = await res.json();
+
+    oldDnsLinkRecordId = data.find(record => record.type === 'TXT' && record.hostname === '_dnslink.divhead.lol')?.id;
+
+    if (oldDnsLinkRecordId) {
+      console.log(`FOUND PREVIOUS DNSLINK ${oldDnsLinkRecordId}`);
+    }
+  }
+
+  {
+    console.log('CREATE NEW DNS RECORD');
+
+    const res = await fetch(`${NETIFLY_API_HOST}/dns_zones/${NETIFLY_DNS_ZONE_ID}/dns_records`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${NETIFLY_API_KEY}`,
+        "Content-Type": 'application/json',
+      },
+      body: JSON.stringify({
+        type: 'TXT',
+        hostname: '_dnslink.divhead.lol',
+        value: dnslink
+      })
+    })
+  
+    const data = await res.json();
+
+    console.log('CREATE NEW DNS RECORD RESULT', data);
+  }
+
+  if (oldDnsLinkRecordId) {
+   console.log('DELETE OLD RECORD');
+  
+    const res = await fetch(`${NETIFLY_API_HOST}/dns_zones/${NETIFLY_DNS_ZONE_ID}/dns_records/${oldDnsLinkRecordId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${NETIFLY_API_KEY}`,
+        "Content-Type": 'application/json',
+      }
+    })
+
+    if (res.ok) {
+      console.log('DELETED');
+    }
+  }
+}
 
 export async function uploadAssets(folder) {
     const folderPath = folder;
@@ -112,3 +172,8 @@ export async function uploadAssets(folder) {
     
     return res.IpfsHash;
 };
+
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
