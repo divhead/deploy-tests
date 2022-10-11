@@ -31,7 +31,6 @@ async function main() {
     await pointToIpfsNetifly(cid);
 }
 
-
 export async function waitForCloudflareIpfs(cid) {
     console.log(`WAITING CID TO BE RESOLVED ON CLOUDFLARE`);
 

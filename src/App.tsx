@@ -7,7 +7,6 @@ function App() {
 
   console.log('kek');
 
-
   return (
     <div className="App">
       <div>
@@ -18,7 +17,7 @@ function App() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      Hello from ipfs, it's deployed! BOOMS 🤣🥹🥹🙂😃😄😄🥳
+      Hello from ipfs, it's deployed! BOOMS
     </div>
   )
 }
